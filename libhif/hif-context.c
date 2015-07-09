@@ -31,6 +31,8 @@
 
 #include "config.h"
 
+#include "/usr/include/solv/pool.h"
+
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 
@@ -921,6 +923,10 @@ have_existing_install (HifContext *context)
 	return g_file_test (usr_path, G_FILE_TEST_IS_DIR);
 }
 
+struct _HySackCopy {
+    Pool *pool;
+};
+
 /**
  * hif_context_setup_sack: (skip)
  * @context: a #HifContext instance.
@@ -966,6 +972,8 @@ hif_context_setup_sack (HifContext *context, HifState *state, GError **error)
 	}
 	hy_sack_set_installonly (priv->sack, hif_context_get_installonly_pkgs (context));
 	hy_sack_set_installonly_limit (priv->sack, hif_context_get_installonly_limit (context));
+
+	pool_setdebugmask (((struct _HySackCopy*) priv->sack)->pool, SOLV_DEBUG_RESULT| SOLV_DEBUG_TRANSACTION | SOLV_DEBUG_UNSOLVABLE | SOLV_DEBUG_POLICY | SOLV_DEBUG_SOLUTIONS | SOLV_DEBUG_ANALYZE | SOLV_DEBUG_RULE_CREATION | SOLV_DEBUG_STATS | SOLV_DEBUG_TO_STDERR);
 
 	/* add installed packages */
 	if (have_existing_install (context)) {

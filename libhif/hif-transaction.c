@@ -1070,6 +1070,7 @@ hif_transaction_depsolve (HifTransaction *transaction,
 
 	/* depsolve */
 	ret = hif_goal_depsolve (goal, error);
+	hy_goal_log_decisions (goal);
 	if (!ret)
 		return FALSE;
 
